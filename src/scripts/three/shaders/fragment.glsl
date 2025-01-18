@@ -5,6 +5,8 @@ uniform sampler2D uTexture1;
 uniform sampler2D uNoiseTexture;
 uniform vec2 uResolution;
 uniform float uTime;
+uniform float uRatio;
+uniform bool uForward;
 
 #define PI 3.14159265
 #define ImageWidth 2400.0
@@ -44,8 +46,10 @@ void main() {
 
   // uTimeを0.0〜1.0の値にする
   // sinedTimeが0.0の時にsignedTimeMinusは1.0、1.0の時に0.0になる
-  float sinedTime =(sin(uTime) + 1.0) * 0.5;
-  float sinedTimeMinus = (cos(uTime + (PI * 0.5)) + 1.0) * 0.5;
+  float sinedTime =(sin(uRatio) + 1.0) * 0.5;
+  // float sinedTime =(sin(uTime) + 1.0) * 0.5;
+  float sinedTimeMinus = (cos(uRatio + (PI * 0.5)) + 1.0) * 0.5;
+  // float sinedTimeMinus = (cos(uTime + (PI * 0.5)) + 1.0) * 0.5;
 
   // ノイズテクスチャのrgの量とuvの距離を取る
   float dist = distance(uv, vec2(noise.r, noise.g));

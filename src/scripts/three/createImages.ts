@@ -38,6 +38,8 @@ export const createMesh = (size: Size, dpr: number) => {
       uTexture1: { value: texture1 },
       uNoiseTexture: { value: noiseTexture },
       uTime: { value: 0.0 },
+      uRatio: { value: 0.0 },
+      uForward: { value: true },
     },
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
@@ -73,4 +75,26 @@ export const updateOnResize = (size: Size, dpr: number) => {
     size.width * dpr,
     size.height * dpr
   );
+};
+
+/**
+ * For tweakpane. on change ratio
+ */
+export const onChangeUniformRatio = (val: number) => {
+  if (!mesh) {
+    return;
+  }
+  const mat = mesh.material as ShaderMaterial;
+  mat.uniforms.uRatio.value = val;
+};
+
+/**
+ * For tweakpane. on change forward
+ */
+export const onChangeUniformForward = (val: boolean) => {
+  if (!mesh) {
+    return;
+  }
+  const mat = mesh.material as ShaderMaterial;
+  mat.uniforms.uForward.value = val;
 };

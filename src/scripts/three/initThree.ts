@@ -1,6 +1,13 @@
 import { Clock, Mesh, PerspectiveCamera, WebGLRenderer } from "three";
 import { createEnvironment } from "./createEnvironment";
-import { createMesh, tickMesh, updateOnResize } from "./createImages";
+import {
+  createMesh,
+  onChangeUniformForward,
+  onChangeUniformRatio,
+  tickMesh,
+  updateOnResize,
+} from "./createImages";
+import { initGUI } from "./GUI/createGui";
 
 /**
  * initialize Three.js
@@ -30,6 +37,12 @@ export const initThree = () => {
     window.addEventListener("resize", () =>
       onResize(camera, renderer, app, images)
     );
+
+    // ---------- lil-gui
+    initGUI({
+      onChangeForward: onChangeUniformForward,
+      onChangeRatio: onChangeUniformRatio,
+    });
   }
 };
 
