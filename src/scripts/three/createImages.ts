@@ -20,8 +20,9 @@ let mesh: Mesh | null = null;
 /**
  * create mesh
  * @param size plane size
+ * @param dpr device pixel ratio
  */
-export const createMesh = (size: Size) => {
+export const createMesh = (size: Size, dpr: number) => {
   const geo = new PlaneGeometry(size.width, size.height, 1, 1);
 
   const texture0 = loader.load(image0);
@@ -31,7 +32,7 @@ export const createMesh = (size: Size) => {
   const mat = new ShaderMaterial({
     uniforms: {
       uResolution: {
-        value: new Vector2(2400, 1600),
+        value: new Vector2(size.width * dpr, size.height * dpr),
       },
       uTexture0: { value: texture0 },
       uTexture1: { value: texture1 },
@@ -40,6 +41,7 @@ export const createMesh = (size: Size) => {
     },
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
+    depthTest: false,
   });
   mesh = new Mesh(geo, mat);
   mesh.position.set(0, 0, 0);
@@ -55,4 +57,20 @@ export const tickMesh = (elapsedTime: number) => {
     return;
   }
   (mesh.material as ShaderMaterial).uniforms.uTime.value = elapsedTime;
+};
+
+/**
+ * update mesh on resize
+ * @param size app size
+ * @param dpr device pixel ratio
+ */
+export const updateOnResize = (size: Size, dpr: number) => {
+  if (!mesh) {
+    return;
+  }
+  const mat = mesh.material as ShaderMaterial;
+  mat.uniforms.uResolution.value = new Vector2(
+    size.width * dpr,
+    size.height * dpr
+  );
 };
