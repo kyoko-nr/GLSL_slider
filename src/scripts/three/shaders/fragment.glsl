@@ -42,27 +42,23 @@ void main() {
   vec4 noise = texture2D(uNoiseTexture, uv);
 
   // 画像のディストーションの強さ
-  float intensity = 0.06;
+  float intensity = 0.1;
 
-  // uTimeを0.0〜1.0の値にする
-  // sinedTimeが0.0の時にsignedTimeMinusは1.0、1.0の時に0.0になる
-  float sinedTime =(sin(uRatio) + 1.0) * 0.5;
-  // float sinedTime =(sin(uTime) + 1.0) * 0.5;
-  float sinedTimeMinus = (cos(uRatio + (PI * 0.5)) + 1.0) * 0.5;
-  // float sinedTimeMinus = (cos(uTime + (PI * 0.5)) + 1.0) * 0.5;
+  float prevTime = clamp(uRatio, 0.0, 1.0);
+  float nextTime = clamp(1.0 - uRatio, 0.0, 1.0);
 
   // ノイズテクスチャのrgの量とuvの距離を取る
   float dist = distance(uv, vec2(noise.r, noise.g));
   // テクスチャ0と1で逆方向に動かす
-  float dist0 = dist * sinedTime;
-  float dist1 = dist * sinedTimeMinus * -1.0;
+  float prevDist = dist * prevTime * -1.0;
+  float nextDist = dist * nextTime * -1.0;
 
-  vec2 coord0 = uv + dist0 * intensity;
-  vec2 coord1 = uv + dist1 * intensity;
+  vec2 prevCoord = uv + prevDist * intensity;
+  vec2 nextCoord = uv + nextDist * intensity;
 
-  vec4 texture0 = texture2D(uTexture0, coord0);
-  vec4 texture1 = texture2D(uTexture1, coord1);
+  vec4 texture0 = texture2D(uTexture0, uForward ? prevCoord : nextCoord);
+  vec4 texture1 = texture2D(uTexture1, uForward ? nextCoord : prevCoord);
 
-  vec4 mixed = mix(texture0, texture1, sinedTime);
+  vec4 mixed = mix(texture0, texture1, uForward ? prevTime : nextTime);
   gl_FragColor = mixed;
 }
