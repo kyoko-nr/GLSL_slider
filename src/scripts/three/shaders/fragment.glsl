@@ -7,6 +7,8 @@ uniform vec2 uResolution;
 uniform float uTime;
 
 #define PI 3.14159265
+#define ImageWidth 2400.0
+#define ImageHeight 1600.0
 
 float easeOutExpo(float x) {
   if(x == 1.0) {
@@ -15,8 +17,25 @@ float easeOutExpo(float x) {
   return 1.0 - pow(2.0, -10.0 * x);
 }
 
+vec2 fitToDisplay(vec2 uv, vec2 resolution) {
+  float dAspect = resolution.x / resolution.y;
+  float iAspect = ImageWidth / ImageHeight;
+  vec2 ration = vec2(
+    min(dAspect / iAspect, 1.0),
+    min(iAspect / dAspect, 1.0)
+  );
+
+  vec2 newUv = vec2(
+    (uv.x - 0.5) * ration.x + 0.5,
+    (uv.y - 0.5) * ration.y + 0.5
+  );
+
+  return newUv;
+}
+
 void main() {
-  vec2 uv = gl_FragCoord.xy / uResolution;
+  vec2 tempUv = gl_FragCoord.xy / uResolution;
+  vec2 uv = fitToDisplay(tempUv, uResolution);
 
   vec4 noise = texture2D(uNoiseTexture, uv);
 
@@ -24,6 +43,7 @@ void main() {
   float intensity = 0.06;
 
   // uTimeを0.0〜1.0の値にする
+  // sinedTimeが0.0の時にsignedTimeMinusは1.0、1.0の時に0.0になる
   float sinedTime =(sin(uTime) + 1.0) * 0.5;
   float sinedTimeMinus = (cos(uTime + (PI * 0.5)) + 1.0) * 0.5;
 
