@@ -51,7 +51,7 @@ void main() {
   float dist = distance(uv, vec2(noise.r, noise.g));
   // テクスチャ0と1で逆方向に動かす
   float dist0 = dist * sinedTime;
-  float dist1 = dist * sinedTimeMinus;
+  float dist1 = dist * sinedTimeMinus * -1.0;
 
   vec2 coord0 = uv + dist0 * intensity;
   vec2 coord1 = uv + dist1 * intensity;
